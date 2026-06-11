@@ -1,0 +1,11 @@
+{
+  "name": "ptk-vault",
+  "version": "1.0.0",
+  "description": "Portal Resmi Installer Internal",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'No build needed'"
+  },
+  "author": "Satrio Rafli Sangaji",
+  "license": "ISC"
+}
