@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import logoAbsensi from './assets/logo-absensi.png'
+import logoAbsensi from './assets/logo-absensi.webp'
 
 const images = [
   'https://www.pertamina-ptk.com/files//dorong-kapal-tanker.jpg',
