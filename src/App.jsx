@@ -191,8 +191,8 @@ function App() {
     flex: 1,
     aspectRatio: '3/4',
     backgroundColor: '#1e293b',
-    borderRadius: '12px',
-    padding: '20px 12px 16px',
+    borderRadius: '14px',
+    padding: '28px 14px 20px',
     cursor: 'pointer',
     textDecoration: 'none',
     color: '#ffffff',
@@ -200,14 +200,14 @@ function App() {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '8px',
+    gap: '12px',
     border: '1px solid #334155'
   }
 
   const iconBoxBase = {
-    width: '44px',
-    height: '44px',
-    borderRadius: '10px',
+    width: '64px',
+    height: '64px',
+    borderRadius: '12px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -223,42 +223,52 @@ function App() {
   }
 
   const cardTitleStyle = {
-    fontSize: '0.8rem',
+    fontSize: '0.85rem',
     fontWeight: '600',
     margin: 0,
     color: '#ffffff'
   }
 
   const cardDescStyle = {
-    fontSize: '0.6rem',
+    fontSize: '0.68rem',
     color: '#64748b',
     margin: 0,
     lineHeight: '1.3',
     fontWeight: 400
   }
 
-  const footerStyle = {
-    marginTop: '40px',
-    padding: '24px 20px',
-    backgroundColor: 'rgba(30,41,59,0.5)',
-    borderRadius: '12px',
-    border: '1px solid #334155',
-    maxWidth: '480px',
-    width: '100%'
-  }
-
-  const footerText = {
-    fontSize: '0.8rem',
+  const heroQuote = {
+    fontSize: '0.75rem',
     color: '#94a3b8',
-    lineHeight: '1.6',
-    margin: 0,
-    fontStyle: 'italic'
+    fontStyle: 'italic',
+    margin: '0 0 12px 0',
+    lineHeight: '1.5',
+    maxWidth: '460px'
   }
 
-  const footerIcon = {
-    fontSize: '1.2rem',
-    marginBottom: '8px',
-    display: 'block'
+  const contactStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    marginTop: '36px'
+  }
+
+  const contactIcon = {
+    fontSize: '1rem'
+  }
+
+  const contactLink = {
+    color: '#60a5fa',
+    fontSize: '0.85rem',
+    fontWeight: '500',
+    textDecoration: 'none'
+  }
+
+  const copyrightStyle = {
+    fontSize: '0.7rem',
+    color: '#475569',
+    margin: '8px 0 0 0'
   }
 
   return (
@@ -279,6 +289,10 @@ function App() {
           <h2 style={heroTagline}>
             Satu website untuk <span style={heroAccent}>direct</span> semuanya!
           </h2>
+          <p style={heroQuote}>
+            Sekarang ga usah ribet ribet buka website satu satu lewat link 
+            karena sekarang satu link sudah bisa buka semua website nya
+          </p>
           <p style={heroSub}>Pilih website admin yang ingin anda buka</p>
           <hr style={dividerStyle} />
 
@@ -362,13 +376,15 @@ function App() {
             </a>
           </div>
 
-          <div style={footerStyle}>
-            <span style={footerIcon}>🔗</span>
-            <p style={footerText}>
-              Sekarang ga usah ribet ribet buka website satu satu lewat link 
-              karena sekarang satu link sudah bisa buka semua website nya
-            </p>
+          <div style={contactStyle}>
+            <span style={contactIcon}>📱</span>
+            <a href={`https://wa.me/628561704149`} style={contactLink}>
+              08561704149
+            </a>
           </div>
+          <p style={copyrightStyle}>
+            &copy; Pertamina Trans Kontinental
+          </p>
         </div>
       </div>
     </>
