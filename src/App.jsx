@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import logoAbsensi from './assets/logo-absensi.webp'
+import logoChecklist from './assets/logo-checklist.webp'
 
 const images = [
   'https://www.pertamina-ptk.com/files//dorong-kapal-tanker.jpg',
@@ -320,9 +321,10 @@ function App() {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              <div style={{ ...iconBoxBase, background: 'rgba(16,185,129,0.15)', color: '#34d399' }}>
-                <span>🚗</span>
-              </div>
+              <div style={{
+                ...iconBoxBase,
+                background: `rgba(16,185,129,0.15) url(${logoChecklist}) center/contain no-repeat`
+              }} />
               <div style={textContainerStyle}>
                 <h2 style={cardTitleStyle}>Checklist Driver</h2>
                 <p style={cardDescStyle}>
