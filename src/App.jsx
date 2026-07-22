@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import logoAbsensi from './assets/logo-absensi.webp'
 import logoChecklist from './assets/logo-checklist.webp'
 import logoRuangan from './assets/logo-ruangan.webp'
@@ -22,6 +22,17 @@ function App() {
   const [idx, setIdx] = useState(0)
   const [sliding, setSliding] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [activeNav, setActiveNav] = useState('websites')
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+
+  const websiteRef = useRef(null)
+  const perangkatRef = useRef(null)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -49,63 +60,22 @@ function App() {
     return () => clearInterval(interval)
   }, [loaded])
 
-  const navbarStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '12px 20px',
-    background: 'rgba(15,23,42,0.85)',
-    backdropFilter: 'blur(12px)',
-    borderBottom: '1px solid rgba(255,255,255,0.06)'
-  }
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY + 120
+      const websiteTop = websiteRef.current?.offsetTop ?? 0
+      const perangkatTop = perangkatRef.current?.offsetTop ?? Infinity
+      if (perangkatTop <= scrollY) setActiveNav('perangkat')
+      else if (websiteTop <= scrollY) setActiveNav('websites')
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-  const navLeft = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
-  }
-
-  const navLogo = {
-    width: '32px',
-    height: '32px',
-    borderRadius: '8px',
-    background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#fff',
-    fontSize: '0.7rem',
-    fontWeight: '700'
-  }
-
-  const navTitle = {
-    fontSize: '0.95rem',
-    fontWeight: '600',
-    color: '#ffffff',
-    margin: 0
-  }
-
-  const navDate = {
-    fontSize: '0.75rem',
-    color: '#94a3b8',
-    margin: 0
-  }
-
-  const containerStyle = {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    textAlign: 'center',
-    padding: '80px 16px 40px',
-    position: 'relative',
-    overflow: 'hidden'
+  const scrollTo = section => {
+    setActiveNav(section)
+    const el = section === 'websites' ? websiteRef.current : perangkatRef.current
+    el?.scrollIntoView({ behavior: 'smooth' })
   }
 
   const bgBase = {
@@ -139,14 +109,161 @@ function App() {
     zIndex: 1
   }
 
-  const contentStyle = {
-    position: 'relative',
-    zIndex: 2,
+  const sidebarStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    width: '260px',
+    zIndex: 11,
+    display: 'flex',
+    flexDirection: 'column',
+    background: 'rgba(15,23,42,0.9)',
+    backdropFilter: 'blur(16px)',
+    borderRight: '1px solid rgba(255,255,255,0.06)',
+    padding: '24px 0'
+  }
+
+  const sidebarBrand = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '0 20px 24px 20px',
+    borderBottom: '1px solid rgba(255,255,255,0.06)',
+    marginBottom: '16px'
+  }
+
+  const sidebarLogo = {
+    width: '34px',
+    height: '34px',
+    borderRadius: '10px',
+    background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#fff',
+    fontSize: '0.7rem',
+    fontWeight: '700',
+    flexShrink: 0
+  }
+
+  const sidebarTitle = {
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: '#ffffff',
+    margin: 0
+  }
+
+  const navList = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+    padding: '0 12px',
+    flex: 1
+  }
+
+  const navBtn = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    width: '100%',
+    padding: '12px 14px',
+    borderRadius: '10px',
+    border: 'none',
+    background: 'transparent',
+    color: '#94a3b8',
+    fontSize: '0.85rem',
+    fontWeight: '500',
+    cursor: 'pointer',
+    textAlign: 'left',
+    transition: 'all 0.2s ease'
+  }
+
+  const navBtnActive = {
+    ...navBtn,
+    background: 'rgba(59,130,246,0.12)',
+    color: '#60a5fa'
+  }
+
+  const navDot = {
+    width: '6px',
+    height: '6px',
+    borderRadius: '50%',
+    background: 'currentColor',
+    flexShrink: 0
+  }
+
+  const sidebarDate = {
+    fontSize: '0.7rem',
+    color: '#475569',
+    padding: '16px 20px 0',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
+    marginTop: 'auto'
+  }
+
+  const bottomNavStyle = {
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '64px',
+    zIndex: 11,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '24px',
+    background: 'rgba(15,23,42,0.92)',
+    backdropFilter: 'blur(16px)',
+    borderTop: '1px solid rgba(255,255,255,0.06)'
+  }
+
+  const bottomBtn = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    gap: '4px',
+    background: 'none',
+    border: 'none',
+    padding: '6px 16px',
+    cursor: 'pointer',
+    color: '#94a3b8',
+    fontSize: '0.65rem',
+    transition: 'all 0.2s ease'
+  }
+
+  const bottomBtnActive = {
+    ...bottomBtn,
+    color: '#60a5fa'
+  }
+
+  const bottomDot = {
+    width: '4px',
+    height: '4px',
+    borderRadius: '50%',
+    background: 'currentColor'
+  }
+
+  const mainStyle = {
+    position: 'relative',
+    zIndex: 2,
+    marginLeft: isMobile ? '0' : '260px',
+    marginBottom: isMobile ? '64px' : '0',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    textAlign: 'center',
+    padding: isMobile ? '60px 16px 80px' : '80px 24px 40px',
+    overflow: 'hidden'
+  }
+
+  const sectionStyle = {
     width: '100%',
-    maxWidth: '560px'
+    maxWidth: '720px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   }
 
   const heroTagline = {
@@ -161,6 +278,15 @@ function App() {
     background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent'
+  }
+
+  const heroQuote = {
+    fontSize: '0.75rem',
+    color: '#94a3b8',
+    fontStyle: 'italic',
+    margin: '0 0 12px 0',
+    lineHeight: '1.5',
+    maxWidth: '500px'
   }
 
   const heroSub = {
@@ -237,13 +363,39 @@ function App() {
     fontWeight: 400
   }
 
-  const heroQuote = {
-    fontSize: '0.75rem',
-    color: '#94a3b8',
-    fontStyle: 'italic',
-    margin: '0 0 12px 0',
-    lineHeight: '1.5',
-    maxWidth: '460px'
+  const perangkatTitle = {
+    fontSize: '1.4rem',
+    fontWeight: '700',
+    color: '#ffffff',
+    margin: '60px 0 12px 0'
+  }
+
+  const perangkatSub = {
+    fontSize: '0.85rem',
+    color: '#64748b',
+    margin: '0 0 32px 0',
+    maxWidth: '480px',
+    lineHeight: '1.6'
+  }
+
+  const placeholderCard = {
+    width: '100%',
+    maxWidth: '480px',
+    padding: '32px 24px',
+    borderRadius: '14px',
+    border: '1px dashed #334155',
+    backgroundColor: 'rgba(30,41,59,0.4)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '12px'
+  }
+
+  const placeholderText = {
+    fontSize: '0.8rem',
+    color: '#475569',
+    margin: 0,
+    lineHeight: '1.5'
   }
 
   const contactStyle = {
@@ -251,7 +403,7 @@ function App() {
     alignItems: 'center',
     justifyContent: 'center',
     gap: '8px',
-    marginTop: '36px'
+    marginTop: '48px'
   }
 
   const contactIcon = {
@@ -273,24 +425,62 @@ function App() {
 
   return (
     <>
-      <nav style={navbarStyle}>
-        <div style={navLeft}>
-          <div style={navLogo}>PV</div>
-          <p style={navTitle}>PTK Vault</p>
-        </div>
-        <p style={navDate}>{today}</p>
-      </nav>
+      <div style={bgCurrentStyle} />
+      <div style={bgSlideStyle} />
+      <div style={overlayStyle} />
 
-      <div style={containerStyle}>
-        <div style={bgCurrentStyle} />
-        <div style={bgSlideStyle} />
-        <div style={overlayStyle} />
-        <div style={contentStyle}>
+      {isMobile ? (
+        <nav style={bottomNavStyle}>
+          <button
+            style={activeNav === 'websites' ? bottomBtnActive : bottomBtn}
+            onClick={() => scrollTo('websites')}
+          >
+            <div style={bottomDot} />
+            Website
+          </button>
+          <button
+            style={activeNav === 'perangkat' ? bottomBtnActive : bottomBtn}
+            onClick={() => scrollTo('perangkat')}
+          >
+            <div style={bottomDot} />
+            Perangkat
+          </button>
+        </nav>
+      ) : (
+        <nav style={sidebarStyle}>
+          <div style={sidebarBrand}>
+            <div style={sidebarLogo}>PV</div>
+            <p style={sidebarTitle}>PTK Vault</p>
+          </div>
+
+          <div style={navList}>
+            <button
+              style={activeNav === 'websites' ? navBtnActive : navBtn}
+              onClick={() => scrollTo('websites')}
+            >
+              <span style={navDot} />
+              Kumpulan Website
+            </button>
+            <button
+              style={activeNav === 'perangkat' ? navBtnActive : navBtn}
+              onClick={() => scrollTo('perangkat')}
+            >
+              <span style={navDot} />
+              Sesi Perangkat
+            </button>
+          </div>
+
+          <div style={sidebarDate}>{today}</div>
+        </nav>
+      )}
+
+      <main style={mainStyle}>
+        <section ref={websiteRef} id="websites" style={sectionStyle}>
           <h2 style={heroTagline}>
             Satu website untuk <span style={heroAccent}>direct</span> semuanya!
           </h2>
           <p style={heroQuote}>
-            Sekarang ga usah ribet ribet buka website satu satu lewat link 
+            Sekarang ga usah ribet ribet buka website satu satu lewat link
             karena sekarang satu link sudah bisa buka semua website nya
           </p>
           <p style={heroSub}>Pilih website admin yang ingin anda buka</p>
@@ -375,18 +565,33 @@ function App() {
               </div>
             </a>
           </div>
+        </section>
 
-          <div style={contactStyle}>
-            <span style={contactIcon}>📱</span>
-            <a href={`https://wa.me/628561704149`} style={contactLink}>
-              08561704149
-            </a>
-          </div>
-          <p style={copyrightStyle}>
-            &copy; Pertamina Trans Kontinental
+        <section ref={perangkatRef} id="perangkat" style={sectionStyle}>
+          <h2 style={perangkatTitle}>Sesi Perangkat</h2>
+          <p style={perangkatSub}>
+            Kelola dan pantau sesi perangkat yang sedang aktif di lingkungan
+            Pertamina Trans Kontinental
           </p>
+
+          <div style={placeholderCard}>
+            <span style={{ fontSize: '1.5rem', opacity: 0.2 }}>🖥️</span>
+            <p style={placeholderText}>
+              Fitur sesi perangkat akan segera tersedia
+            </p>
+          </div>
+        </section>
+
+        <div style={contactStyle}>
+          <span style={contactIcon}>📱</span>
+          <a href="https://wa.me/628561704149" style={contactLink}>
+            08561704149
+          </a>
         </div>
-      </div>
+        <p style={copyrightStyle}>
+          &copy; Pertamina Trans Kontinental
+        </p>
+      </main>
     </>
   )
 }
