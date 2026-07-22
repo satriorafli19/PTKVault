@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import logoAbsensi from './assets/logo-absensi.webp'
 import logoChecklist from './assets/logo-checklist.webp'
 import logoRuangan from './assets/logo-ruangan.webp'
+import PinAccess from './PinAccess'
 
 const images = [
   'https://www.pertamina-ptk.com/files//dorong-kapal-tanker.jpg',
@@ -19,14 +20,13 @@ const today = new Date().toLocaleDateString('id-ID', {
 })
 
 function App() {
+  const [authenticated, setAuthenticated] = useState(false)
+  const [adminName, setAdminName] = useState('')
+  const [activePage, setActivePage] = useState('websites')
   const [idx, setIdx] = useState(0)
   const [sliding, setSliding] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const [activeNav, setActiveNav] = useState('websites')
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
-
-  const websiteRef = useRef(null)
-  const perangkatRef = useRef(null)
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -60,22 +60,13 @@ function App() {
     return () => clearInterval(interval)
   }, [loaded])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY + 120
-      const websiteTop = websiteRef.current?.offsetTop ?? 0
-      const perangkatTop = perangkatRef.current?.offsetTop ?? Infinity
-      if (perangkatTop <= scrollY) setActiveNav('perangkat')
-      else if (websiteTop <= scrollY) setActiveNav('websites')
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  const handleAuth = name => {
+    setAdminName(name)
+    setAuthenticated(true)
+  }
 
-  const scrollTo = section => {
-    setActiveNav(section)
-    const el = section === 'websites' ? websiteRef.current : perangkatRef.current
-    el?.scrollIntoView({ behavior: 'smooth' })
+  if (!authenticated) {
+    return <PinAccess onSuccess={handleAuth} />
   }
 
   const bgBase = {
@@ -193,12 +184,23 @@ function App() {
     flexShrink: 0
   }
 
-  const sidebarDate = {
-    fontSize: '0.7rem',
-    color: '#475569',
+  const sidebarBottom = {
     padding: '16px 20px 0',
     borderTop: '1px solid rgba(255,255,255,0.06)',
     marginTop: 'auto'
+  }
+
+  const adminNameStyle = {
+    fontSize: '0.8rem',
+    color: '#cbd5e1',
+    fontWeight: '600',
+    margin: '0 0 2px'
+  }
+
+  const sidebarDate = {
+    fontSize: '0.7rem',
+    color: '#475569',
+    margin: 0
   }
 
   const bottomNavStyle = {
@@ -251,10 +253,9 @@ function App() {
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: isMobile ? 'center' : 'flex-start',
     fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    textAlign: 'center',
-    padding: isMobile ? '60px 16px 80px' : '80px 24px 40px',
+    padding: isMobile ? '60px 16px 80px' : '80px 40px 40px',
     overflow: 'hidden'
   }
 
@@ -263,7 +264,8 @@ function App() {
     maxWidth: '720px',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'flex-start',
+    textAlign: 'left'
   }
 
   const heroTagline = {
@@ -302,7 +304,7 @@ function App() {
     background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
     border: 'none',
     borderRadius: '2px',
-    margin: '0 auto 28px auto'
+    margin: '0 0 28px 0'
   }
 
   const cardContainerStyle = {
@@ -310,7 +312,7 @@ function App() {
     flexDirection: 'row',
     gap: '12px',
     width: '100%',
-    justifyContent: 'center'
+    justifyContent: 'flex-start'
   }
 
   const cardBase = {
@@ -367,7 +369,7 @@ function App() {
     fontSize: '1.4rem',
     fontWeight: '700',
     color: '#ffffff',
-    margin: '60px 0 12px 0'
+    margin: '0 0 12px 0'
   }
 
   const perangkatSub = {
@@ -401,7 +403,7 @@ function App() {
   const contactStyle = {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     gap: '8px',
     marginTop: '48px'
   }
@@ -420,7 +422,8 @@ function App() {
   const copyrightStyle = {
     fontSize: '0.7rem',
     color: '#475569',
-    margin: '8px 0 0 0'
+    margin: '8px 0 0 0',
+    textAlign: 'left'
   }
 
   return (
@@ -432,15 +435,15 @@ function App() {
       {isMobile ? (
         <nav style={bottomNavStyle}>
           <button
-            style={activeNav === 'websites' ? bottomBtnActive : bottomBtn}
-            onClick={() => scrollTo('websites')}
+            style={activePage === 'websites' ? bottomBtnActive : bottomBtn}
+            onClick={() => setActivePage('websites')}
           >
             <div style={bottomDot} />
             Website
           </button>
           <button
-            style={activeNav === 'perangkat' ? bottomBtnActive : bottomBtn}
-            onClick={() => scrollTo('perangkat')}
+            style={activePage === 'perangkat' ? bottomBtnActive : bottomBtn}
+            onClick={() => setActivePage('perangkat')}
           >
             <div style={bottomDot} />
             Perangkat
@@ -455,142 +458,153 @@ function App() {
 
           <div style={navList}>
             <button
-              style={activeNav === 'websites' ? navBtnActive : navBtn}
-              onClick={() => scrollTo('websites')}
+              style={activePage === 'websites' ? navBtnActive : navBtn}
+              onClick={() => setActivePage('websites')}
             >
               <span style={navDot} />
               Kumpulan Website
             </button>
             <button
-              style={activeNav === 'perangkat' ? navBtnActive : navBtn}
-              onClick={() => scrollTo('perangkat')}
+              style={activePage === 'perangkat' ? navBtnActive : navBtn}
+              onClick={() => setActivePage('perangkat')}
             >
               <span style={navDot} />
               Sesi Perangkat
             </button>
           </div>
 
-          <div style={sidebarDate}>{today}</div>
+          <div style={sidebarBottom}>
+            <p style={adminNameStyle}>{adminName}</p>
+            <p style={sidebarDate}>{today}</p>
+          </div>
         </nav>
       )}
 
       <main style={mainStyle}>
-        <section ref={websiteRef} id="websites" style={sectionStyle}>
-          <h2 style={heroTagline}>
-            Satu website untuk <span style={heroAccent}>direct</span> semuanya!
-          </h2>
-          <p style={heroQuote}>
-            Sekarang ga usah ribet ribet buka website satu satu lewat link
-            karena sekarang satu link sudah bisa buka semua website nya
-          </p>
-          <p style={heroSub}>Pilih website admin yang ingin anda buka</p>
-          <hr style={dividerStyle} />
-
-          <div style={cardContainerStyle}>
-            <a
-              href="https://geotrans-h3pw.vercel.app/"
-              style={cardBase}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#334155';
-                e.currentTarget.style.borderColor = '#3b82f6';
-                e.currentTarget.style.transform = 'translateY(-3px)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = '#1e293b';
-                e.currentTarget.style.borderColor = '#334155';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
-              <div style={{
-                ...iconBoxBase,
-                background: `rgba(59,130,246,0.15) url(${logoAbsensi}) center/contain no-repeat`
-              }} />
-              <div style={textContainerStyle}>
-                <h2 style={cardTitleStyle}>Absensi Geotrans</h2>
-                <p style={cardDescStyle}>
-                  Kelola absensi Driver, OB, & Juru Parkir
-                </p>
-              </div>
-            </a>
-
-            <a
-              href="https://checklist-car.vercel.app/"
-              style={cardBase}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#334155';
-                e.currentTarget.style.borderColor = '#10b981';
-                e.currentTarget.style.transform = 'translateY(-3px)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = '#1e293b';
-                e.currentTarget.style.borderColor = '#334155';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
-              <div style={{
-                ...iconBoxBase,
-                background: `rgba(16,185,129,0.15) url(${logoChecklist}) center/contain no-repeat`
-              }} />
-              <div style={textContainerStyle}>
-                <h2 style={cardTitleStyle}>Checklist Driver</h2>
-                <p style={cardDescStyle}>
-                  Kelola laporan kondisi kendaraan kantor
-                </p>
-              </div>
-            </a>
-
-            <a
-              href="#"
-              style={cardBase}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#334155';
-                e.currentTarget.style.borderColor = '#f59e0b';
-                e.currentTarget.style.transform = 'translateY(-3px)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = '#1e293b';
-                e.currentTarget.style.borderColor = '#334155';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
-              <div style={{
-                ...iconBoxBase,
-                background: `rgba(245,158,11,0.15) url(${logoRuangan}) center/contain no-repeat`
-              }} />
-              <div style={textContainerStyle}>
-                <h2 style={cardTitleStyle}>Checklist Ruangan</h2>
-                <p style={cardDescStyle}>
-                  Kelola kondisi gedung
-                </p>
-              </div>
-            </a>
-          </div>
-        </section>
-
-        <section ref={perangkatRef} id="perangkat" style={sectionStyle}>
-          <h2 style={perangkatTitle}>Sesi Perangkat</h2>
-          <p style={perangkatSub}>
-            Kelola dan pantau sesi perangkat yang sedang aktif di lingkungan
-            Pertamina Trans Kontinental
-          </p>
-
-          <div style={placeholderCard}>
-            <span style={{ fontSize: '1.5rem', opacity: 0.2 }}>🖥️</span>
-            <p style={placeholderText}>
-              Fitur sesi perangkat akan segera tersedia
+        {activePage === 'websites' ? (
+          <section style={sectionStyle}>
+            <h2 style={heroTagline}>
+              Satu website untuk <span style={heroAccent}>direct</span> semuanya!
+            </h2>
+            <p style={heroQuote}>
+              Sekarang ga usah ribet ribet buka website satu satu lewat link
+              karena sekarang satu link sudah bisa buka semua website nya
             </p>
-          </div>
-        </section>
+            <p style={heroSub}>Pilih website admin yang ingin anda buka</p>
+            <hr style={dividerStyle} />
 
-        <div style={contactStyle}>
-          <span style={contactIcon}>📱</span>
-          <a href="https://wa.me/628561704149" style={contactLink}>
-            08561704149
-          </a>
-        </div>
-        <p style={copyrightStyle}>
-          &copy; Pertamina Trans Kontinental
-        </p>
+            <div style={cardContainerStyle}>
+              <a
+                href="https://geotrans-h3pw.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={cardBase}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = '#334155';
+                  e.currentTarget.style.borderColor = '#3b82f6';
+                  e.currentTarget.style.transform = 'translateY(-3px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = '#1e293b';
+                  e.currentTarget.style.borderColor = '#334155';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <div style={{
+                  ...iconBoxBase,
+                  background: `rgba(59,130,246,0.15) url(${logoAbsensi}) center/contain no-repeat`
+                }} />
+                <div style={textContainerStyle}>
+                  <h2 style={cardTitleStyle}>Absensi Geotrans</h2>
+                  <p style={cardDescStyle}>
+                    Kelola absensi Driver, OB, & Juru Parkir
+                  </p>
+                </div>
+              </a>
+
+              <a
+                href="https://checklist-car.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={cardBase}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = '#334155';
+                  e.currentTarget.style.borderColor = '#10b981';
+                  e.currentTarget.style.transform = 'translateY(-3px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = '#1e293b';
+                  e.currentTarget.style.borderColor = '#334155';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <div style={{
+                  ...iconBoxBase,
+                  background: `rgba(16,185,129,0.15) url(${logoChecklist}) center/contain no-repeat`
+                }} />
+                <div style={textContainerStyle}>
+                  <h2 style={cardTitleStyle}>Checklist Driver</h2>
+                  <p style={cardDescStyle}>
+                    Kelola laporan kondisi kendaraan kantor
+                  </p>
+                </div>
+              </a>
+
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={cardBase}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = '#334155';
+                  e.currentTarget.style.borderColor = '#f59e0b';
+                  e.currentTarget.style.transform = 'translateY(-3px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = '#1e293b';
+                  e.currentTarget.style.borderColor = '#334155';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <div style={{
+                  ...iconBoxBase,
+                  background: `rgba(245,158,11,0.15) url(${logoRuangan}) center/contain no-repeat`
+                }} />
+                <div style={textContainerStyle}>
+                  <h2 style={cardTitleStyle}>Checklist Ruangan</h2>
+                  <p style={cardDescStyle}>
+                    Kelola kondisi gedung
+                  </p>
+                </div>
+              </a>
+            </div>
+
+            <div style={contactStyle}>
+              <span style={contactIcon}>📱</span>
+              <a href="https://wa.me/628561704149" style={contactLink}>
+                08561704149
+              </a>
+            </div>
+            <p style={copyrightStyle}>
+              &copy; Pertamina Trans Kontinental
+            </p>
+          </section>
+        ) : (
+          <section style={sectionStyle}>
+            <h2 style={perangkatTitle}>Sesi Perangkat</h2>
+            <p style={perangkatSub}>
+              Kelola dan pantau sesi perangkat yang sedang aktif di lingkungan
+              Pertamina Trans Kontinental
+            </p>
+
+            <div style={placeholderCard}>
+              <span style={{ fontSize: '1.5rem', opacity: 0.2 }}>🖥️</span>
+              <p style={placeholderText}>
+                Fitur sesi perangkat akan segera tersedia
+              </p>
+            </div>
+          </section>
+        )}
       </main>
     </>
   )
