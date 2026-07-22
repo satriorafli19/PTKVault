@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import logoAbsensi from './assets/logo-absensi.png'
 
 const images = [
   'https://www.pertamina-ptk.com/files//dorong-kapal-tanker.jpg',
@@ -293,9 +294,10 @@ function App() {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              <div style={{ ...iconBoxBase, background: 'rgba(59,130,246,0.15)', color: '#60a5fa' }}>
-                <span>📝</span>
-              </div>
+              <div style={{
+                ...iconBoxBase,
+                background: `rgba(59,130,246,0.15) url(${logoAbsensi}) center/contain no-repeat`
+              }} />
               <div style={textContainerStyle}>
                 <h2 style={cardTitleStyle}>Absensi Geotrans</h2>
                 <p style={cardDescStyle}>
