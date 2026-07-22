@@ -1,61 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PTK Vault</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            /* Gradasi dibuat 300% supaya bisa digeser animasinya */
-            background: linear-gradient(135deg, #007bff, #E31D2B, #28a745);
-            background-size: 300% 300%;
-            animation: gradientMove 10s ease infinite;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-
-        /* Animasi pergerakan gradasi */
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        h1 { font-size: 3rem; margin-bottom: 10px; }
-        p { font-size: 1.2rem; margin-bottom: 30px; }
-        
-        .btn {
-            background-color: white;
-            color: #E31D2B;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
-        }
-        
-        .btn:hover {
-            transform: scale(1.05);
-        }
-    </style>
-</head>
-<body>
-
-    <h1>PTK Vault</h1>
-    <p>Portal Resmi Installer Aplikasi Internal</p>
-    <a href="https://drive.google.com/drive/folders/1ZqSLIUMveHm5R8awv8yaXm5kkLXIZ0Cz?usp=sharing" class="btn">
-        Download Installer
-    </a>
-
-</body>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

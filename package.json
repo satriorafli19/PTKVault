@@ -2,10 +2,20 @@
   "name": "ptk-vault",
   "version": "1.0.0",
   "description": "Portal Resmi Installer Internal",
-  "main": "index.html",
+  "type": "module",
   "scripts": {
-    "build": "echo 'No build needed'"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "author": "Satrio Rafli Sangaji",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
+    "vite": "^8.0.12"
+  }
 }
