@@ -2,10 +2,20 @@ const KEYS = {
   PIN: 'ptk_pin',
   HISTORY: 'ptk_login_history',
   BANNER: 'ptk_banner',
-  BANNER_DISMISSED: 'ptk_banner_dismissed'
+  BANNER_DISMISSED: 'ptk_banner_dismissed',
+  DEVICE_ID: 'ptk_device_id'
 }
 
 const DEFAULT_PIN = '1234'
+
+export function getDeviceId() {
+  let id = localStorage.getItem(KEYS.DEVICE_ID)
+  if (!id) {
+    id = crypto.randomUUID()
+    localStorage.setItem(KEYS.DEVICE_ID, id)
+  }
+  return id
+}
 
 export function getPin() {
   return localStorage.getItem(KEYS.PIN) || DEFAULT_PIN
@@ -16,9 +26,10 @@ export function setPin(newPin) {
 }
 
 export function addLoginHistory(device, browser) {
-  const list = getLoginHistory()
-  list.unshift({
+  const all = getLoginHistoryAll()
+  all.unshift({
     id: crypto.randomUUID(),
+    deviceId: getDeviceId(),
     device,
     browser,
     time: new Date().toLocaleString('id-ID', {
@@ -27,15 +38,19 @@ export function addLoginHistory(device, browser) {
     }),
     timestamp: Date.now()
   })
-  localStorage.setItem(KEYS.HISTORY, JSON.stringify(list))
+  localStorage.setItem(KEYS.HISTORY, JSON.stringify(all))
 }
 
-export function getLoginHistory() {
+function getLoginHistoryAll() {
   try {
     return JSON.parse(localStorage.getItem(KEYS.HISTORY) || '[]')
   } catch {
     return []
   }
+}
+
+export function getLoginHistory() {
+  return getLoginHistoryAll().filter(h => h.deviceId === getDeviceId())
 }
 
 export function getBanner() {
