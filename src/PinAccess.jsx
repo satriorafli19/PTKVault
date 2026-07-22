@@ -1,6 +1,5 @@
 import { useState } from 'react'
-
-const APP_PIN = '1234'
+import { getPin, addLoginHistory } from './utils/storage'
 
 const containerStyle = {
   position: 'fixed',
@@ -96,9 +95,17 @@ export default function PinAccess({ onSuccess }) {
   const [error, setError] = useState(false)
   const [focused, setFocused] = useState(false)
 
+  function detect(ua) {
+    const device = /Windows/.test(ua) ? 'Windows' : /Mac OS/.test(ua) && !/like Mac/.test(ua) ? 'macOS' : /Android/.test(ua) ? 'Android' : /iPhone|iPad|iPod/.test(ua) ? 'iOS' : /Linux/.test(ua) ? 'Linux' : 'Unknown'
+    const browser = /Edg/.test(ua) ? 'Edge' : /Chrome/.test(ua) && /Mobile/.test(ua) ? 'Chrome Mobile' : /Chrome/.test(ua) && !/OPR/.test(ua) ? 'Chrome' : /Firefox/.test(ua) ? 'Firefox' : /Safari/.test(ua) && !/Chrome/.test(ua) ? 'Safari' : /OPR/.test(ua) ? 'Opera' : 'Unknown'
+    return { device, browser }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (pin === APP_PIN) {
+    if (pin === getPin()) {
+      const { device, browser } = detect(navigator.userAgent)
+      addLoginHistory(device, browser)
       onSuccess('Admin')
     } else {
       setError(true)
