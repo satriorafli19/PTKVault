@@ -189,6 +189,7 @@ function App() {
 
   const cardBase = {
     flex: 1,
+    aspectRatio: '3/4',
     backgroundColor: '#1e293b',
     borderRadius: '12px',
     padding: '20px 12px 16px',
