@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import logoAbsensi from './assets/logo-absensi.webp'
 import logoChecklist from './assets/logo-checklist.webp'
+import logoRuangan from './assets/logo-ruangan.webp'
 
 const images = [
   'https://www.pertamina-ptk.com/files//dorong-kapal-tanker.jpg',
@@ -347,9 +348,10 @@ function App() {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              <div style={{ ...iconBoxBase, background: 'rgba(245,158,11,0.15)', color: '#fbbf24' }}>
-                <span>🏠</span>
-              </div>
+              <div style={{
+                ...iconBoxBase,
+                background: `rgba(245,158,11,0.15) url(${logoRuangan}) center/contain no-repeat`
+              }} />
               <div style={textContainerStyle}>
                 <h2 style={cardTitleStyle}>Checklist Ruangan</h2>
                 <p style={cardDescStyle}>
