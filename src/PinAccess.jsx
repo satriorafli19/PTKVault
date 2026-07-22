@@ -24,19 +24,17 @@ const cardStyle = {
   textAlign: 'center'
 }
 
-const logoBox = {
-  width: '56px',
-  height: '56px',
-  borderRadius: '16px',
-  background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: '#fff',
-  fontSize: '1.1rem',
-  fontWeight: '700',
-  margin: '0 auto 16px'
-}
+  const logoBox = {
+    width: '56px',
+    height: '56px',
+    borderRadius: '16px',
+    background: 'rgba(59,130,246,0.15)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: '0 auto 16px',
+    overflow: 'hidden'
+  }
 
 const titleStyle = {
   fontSize: '1.3rem',
@@ -91,6 +89,8 @@ const errorStyle = {
   margin: '12px 0 0'
 }
 
+const logoUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNvcYbsNekPXGzFrzVJPjAOvV06K2O0noTPBOXsNE9IZObomjjNkKx9LI&s=10'
+
 export default function PinAccess({ onSuccess }) {
   const [pin, setPin] = useState('')
   const [error, setError] = useState(false)
@@ -99,7 +99,7 @@ export default function PinAccess({ onSuccess }) {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (pin === APP_PIN) {
-      onSuccess('Satrio Rafli')
+      onSuccess('Admin')
     } else {
       setError(true)
       setPin('')
@@ -109,7 +109,9 @@ export default function PinAccess({ onSuccess }) {
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
-        <div style={logoBox}>PV</div>
+        <div style={logoBox}>
+          <img src={logoUrl} alt="PTK Vault" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
         <h1 style={titleStyle}>PTK Vault</h1>
         <p style={subtitleStyle}>Masukkan PIN untuk mengakses</p>
 

@@ -4,6 +4,8 @@ import logoChecklist from './assets/logo-checklist.webp'
 import logoRuangan from './assets/logo-ruangan.webp'
 import PinAccess from './PinAccess'
 
+const logoPtk = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNvcYbsNekPXGzFrzVJPjAOvV06K2O0noTPBOXsNE9IZObomjjNkKx9LI&s=10'
+
 const images = [
   'https://www.pertamina-ptk.com/files//dorong-kapal-tanker.jpg',
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrG7RQlefhXCNMANvHf7SsdBTaQfa4Gvzhszt24eeCxw&s=10',
@@ -128,14 +130,12 @@ function App() {
     width: '34px',
     height: '34px',
     borderRadius: '10px',
-    background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+    background: 'rgba(59,130,246,0.15)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#fff',
-    fontSize: '0.7rem',
-    fontWeight: '700',
-    flexShrink: 0
+    flexShrink: 0,
+    overflow: 'hidden'
   }
 
   const sidebarTitle = {
@@ -452,7 +452,9 @@ function App() {
       ) : (
         <nav style={sidebarStyle}>
           <div style={sidebarBrand}>
-            <div style={sidebarLogo}>PV</div>
+            <div style={sidebarLogo}>
+              <img src={logoPtk} alt="PTK Vault" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
             <p style={sidebarTitle}>PTK Vault</p>
           </div>
 
